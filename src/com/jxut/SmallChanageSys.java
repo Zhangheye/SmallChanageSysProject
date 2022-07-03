@@ -12,15 +12,21 @@ import java.util.Scanner;
 
 public class SmallChanageSys {
 
-    double money = 0;
+    //余额
     double balance = 0;
 
+    //退出的变量
+    boolean quit = false;
+
+    //获取当前日期并且格式化
     Date date = new Date();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     String format = sdf.format(date);
 
+    //存放零钱通明细的集合
     ArrayList<String> strList = new ArrayList<String>();
 
+    //零钱通菜单
     public  void menu(){
         while (true){
             System.out.println("--------------零钱通菜单--------------");
@@ -30,6 +36,10 @@ public class SmallChanageSys {
             System.out.println("\t\t\t\t4 退  出");
             System.out.println("请选择(1-4):");
             select();
+
+            if (quit){
+                break;
+            }
         }
     }
 
@@ -43,13 +53,25 @@ public class SmallChanageSys {
         }else if (anInt==3){
             consumption();
         }else if (anInt == 4){
-            return;
+            quit();
         }
+    }
+
+    private boolean quit() {
+        System.out.println("请确认是否退出(y/n):");
+        Scanner s = new Scanner(System.in);
+        String s1 = s.nextLine();
+        if (s1.equals("y")){
+            return quit = true;
+        }else
+            System.out.println("取消退出!");
+
+        return false;
     }
 
     //消费账单
     private  void consumption() {
-        if (balance < 0){
+        if (balance <= 0){
             System.out.println("对不起，您的余额为零！无法消费！");
         }
 
@@ -57,7 +79,7 @@ public class SmallChanageSys {
         Scanner ss = new Scanner(System.in);
         int anInt = ss.nextInt();
 
-        if (anInt > money){
+        if (anInt > balance){
             System.out.println("对不起，您的消费金额大于余额！消费失败！");
         }
 
@@ -66,11 +88,9 @@ public class SmallChanageSys {
         String s1 = s.nextLine();
 
 
-        balance -= (money - anInt);
+        balance -= anInt;
 
-        strList.add(s1 + " -"+anInt +" "+ format+" 余额：" +balance);
-
-        System.out.println(s1 + " -"+anInt +" "+ format+" 余额：" +balance);
+        strList.add(s1 +"\t"+ "-"+anInt +"\t"+ format+" 余额:" +balance);
     }
 
     //收益入账
@@ -79,14 +99,12 @@ public class SmallChanageSys {
         System.out.println("请输入你的收益：");
         Scanner s = new Scanner(System.in);
         int anInt = s.nextInt();
-        if (anInt < 0){
-            System.out.println("入账无法小于0！请重新输入！");
+        if (anInt <= 0){
+            System.out.println("入账无法小于或等于0！请重新输入！");
         }
-        balance += (money+anInt);
+        balance +=anInt;
 
-        strList.add("收益入账  +" + anInt +" "+format+" 余额：" +balance );
-        System.out.println("收益入账  +" + anInt +" "+format+" 余额：" +balance );
-
+        strList.add("收益入账\t+" + anInt +"\t"+format+" 余额:" +balance );
     }
 
     //零钱通明细
