@@ -1,20 +1,27 @@
 package com.jxut;
 
-import javafx.scene.SceneAntialiasing;
+/**
+ * 该类是完成零钱通的各个功能的类
+ *  各功能对应一个方法
+ * */
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
 public class SmallChanageSys {
-    public static void main(String[] args) {
 
-        double money = 0;
-        double balance = 0;
-        menu(money,balance);
+    double money = 0;
+    double balance = 0;
 
-    }
-    public static void menu(double money,double balance){
+    Date date = new Date();
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    String format = sdf.format(date);
+
+    ArrayList<String> strList = new ArrayList<String>();
+
+    public  void menu(){
         while (true){
             System.out.println("--------------零钱通菜单--------------");
             System.out.println("\t\t\t\t1 零钱通明细");
@@ -22,68 +29,71 @@ public class SmallChanageSys {
             System.out.println("\t\t\t\t3 消费账单");
             System.out.println("\t\t\t\t4 退  出");
             System.out.println("请选择(1-4):");
-            select(money,balance);
-            if (money < -1){
-                break;
-            }
+            select();
         }
     }
 
-    private static void select(double money,double balance) {
+    private  void select() {
         Scanner s = new Scanner(System.in);
         int anInt = s.nextInt();
         if (anInt == 1){
-            detail(money);
+            detail();
         }else if (anInt == 2){
-            earnings(money,balance);
+            earnings();
         }else if (anInt==3){
-            consumption(money,balance);
+            consumption();
         }else if (anInt == 4){
-            quit();
+            return;
         }
     }
 
-    //退出
-    private static void quit() {
-
-    }
-
     //消费账单
-    private static void consumption(double money,double balance) {
-        System.out.println("请输入你的消费去处：");
-        Scanner s = new Scanner(System.in);
-        String s1 = s.nextLine();
+    private  void consumption() {
+        if (balance < 0){
+            System.out.println("对不起，您的余额为零！无法消费！");
+        }
 
         System.out.println("请输入你的消费金额：");
         Scanner ss = new Scanner(System.in);
         int anInt = ss.nextInt();
 
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String format = sdf.format(date);
+        if (anInt > money){
+            System.out.println("对不起，您的消费金额大于余额！消费失败！");
+        }
 
-        balance = money - anInt;
+        System.out.println("请输入你的消费用处：");
+        Scanner s = new Scanner(System.in);
+        String s1 = s.nextLine();
 
-        System.out.println(s1 + " -"+anInt +" "+ format+"余额：" +balance);
+
+        balance -= (money - anInt);
+
+        strList.add(s1 + " -"+anInt +" "+ format+" 余额：" +balance);
+
+        System.out.println(s1 + " -"+anInt +" "+ format+" 余额：" +balance);
     }
 
     //收益入账
-    private static void earnings(double money,double balance) {
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String format = sdf.format(date);
+    private  void earnings() {
 
         System.out.println("请输入你的收益：");
         Scanner s = new Scanner(System.in);
         int anInt = s.nextInt();
-        balance = money+anInt;
-        System.out.println("收益入账  +" + anInt +" "+format+"余额：" +balance );
+        if (anInt < 0){
+            System.out.println("入账无法小于0！请重新输入！");
+        }
+        balance += (money+anInt);
+
+        strList.add("收益入账  +" + anInt +" "+format+" 余额：" +balance );
+        System.out.println("收益入账  +" + anInt +" "+format+" 余额：" +balance );
 
     }
 
     //零钱通明细
-    private static void detail(double money) {
+    private  void detail() {
         System.out.println("--------------零钱通明细--------------");
-        System.out.println("");
+        for (String s :strList){
+            System.out.println(s);
+        }
     }
 }
