@@ -37,6 +37,7 @@ public class SmallChanageSys {
             System.out.println("请选择(1-4):");
             //用户进行选择
             select();
+            //判断是否退出
             if (quit) {
                 break;
             }
